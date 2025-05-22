@@ -1,0 +1,13 @@
+{
+  "java.project.referencedLibraries": ["lib/jade.jar"],
+  "java.project.outputPath": "classes",
+  "java.project.sourcePaths": ["part1", "part2", "part3"],
+  "notebook.editorOptionsCustomizations": {},
+  "notebook.find.filters": {
+    
+    "markupSource": true,
+    "markupPreview": true,
+    "codeSource": true,
+    "codeOutput": true
+  }
+}

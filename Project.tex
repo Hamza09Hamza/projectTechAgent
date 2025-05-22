@@ -1,0 +1,475 @@
+\documentclass[a4paper,12pt]{report}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{tikz}
+\usetikzlibrary{shapes, arrows, positioning}
+\usepackage[french]{babel}  % Active la césure et la typographie française
+\usepackage{lmodern}        % Améliore le rendu des accents
+\usepackage{lettrine} 
+\usepackage{amsmath}
+\usepackage{algorithmic}
+\usepackage{float}% Pour la lettrine en début de paragraphe
+\geometry{left=1.5cm, right=1.5cm, top=1cm, bottom=2cm}
+\usepackage{listings}
+\usepackage{xcolor}
+\begin{document}
+\thispagestyle{empty}
+\lstdefinestyle{java}{
+  backgroundcolor=\color{white},
+  basicstyle=\footnotesize\ttfamily,
+  breaklines=true,
+  frame=single,
+  language=Java,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{green},
+  stringstyle=\color{red},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  numbersep=5pt,
+  showstringspaces=false
+}
+\begin{center}
+    \begin{figure}[h]
+        \begin{minipage}{0.15\textwidth}
+            \centering
+            \includegraphics[width=\linewidth]{image/logobabez.png}
+        \end{minipage}
+        \hspace*{0.9cm}
+        \begin{minipage}{0.6\textwidth}
+            \centering
+            \subsubsection*{\textbf{République Algérienne Démocratique et Populaire}}
+            \subsubsection*{\textnormal{Ministère de l'Enseignement Supérieur et de la Recherche Scientifique}}
+        \end{minipage}
+        \begin{minipage}{0.15\textwidth}
+            \centering
+            \includegraphics[width=\linewidth]{image/logobabez.png}
+        \end{minipage}
+    \end{figure}
+
+    \vspace{20pt}
+    \subsubsection*{\textbf{Université des Sciences et de la Technologie Houari Boumediene}}
+    \subsubsection*{\textnormal{Faculté d'Informatique}}
+    \subsubsection*{\textnormal{Département IA \& SD}}
+\end{center}
+
+\begin{center}
+    \subsection*{\textnormal{Specialization: Master's in Intelligent Information Systems}}
+    \vspace{30pt}
+    \rule{17cm}{0.5pt}
+    \section*{Project:}
+    \section*{\textbf{Multi-agent systems}}
+    \rule{17cm}{0.5pt}
+\end{center}
+
+\vspace{20pt}
+\subsubsection*{ \textbf{Présenté par:} \\ 
+\textbf{BOUKADER} \textnormal{Hamza G2}\\
+\textbf{CHETOUANE} \textnormal{ANIS G2}\\
+\textbf{} \textnormal{}\\
+}
+\vspace{30pt}
+
+
+\vspace{180pt}
+2024/2025
+
+\vspace{15pt}
+\fontsize{12}{14}\selectfont
+
+
+
+\newpage  % Nouvelle page pour la table des matières
+\thispagestyle{empty}
+\tableofcontents
+
+\newpage  % Nouvelle page pour la liste des figures
+\thispagestyle{empty}
+\listoffigures
+
+
+\newpage % Nouvelle page pour l'Introduction Générale
+
+\chapter{Introduction aux Systèmes Multi-Agents}
+
+\section{Définition et principes des systèmes multi-agents}
+Les systèmes multi-agents (SMA) sont des systèmes composés d'entités autonomes appelées agents qui interagissent dans un environnement commun. Chaque agent possède ses propres objectifs, capacités, et prise de décision. Les agents peuvent communiquer, négocier, coopérer ou entrer en compétition pour atteindre leurs objectifs individuels ou collectifs. La force des SMA réside dans leur capacité à résoudre des problèmes complexes qui seraient difficiles, voire impossibles, à aborder avec une approche centralisée monolithique. Ils permettent une modularité, une flexibilité et une robustesse accrues.
+
+\section{Architecture JADE}
+JADE (Java Agent DEvelopment Framework) est une plateforme logicielle entièrement implémentée en Java qui simplifie le développement d'agents conformes aux spécifications FIPA (Foundation for Intelligent Physical Agents). Elle fournit:
+\begin{itemize}
+    \item Un environnement d'exécution distribué où les agents peuvent opérer, même sur différentes machines.
+    \item Des bibliothèques pour la création d'agents et leurs comportements, y compris des mécanismes de communication basés sur les messages ACL (Agent Communication Language) standardisés par FIPA.
+    \item Des outils graphiques d'administration et de surveillance, tels que le RMA (Remote Management Agent), qui permet de visualiser et de gérer les agents et les conteneurs sur la plateforme.
+\end{itemize}
+
+Dans notre projet, nous utilisons JADE pour implémenter nos agents et gérer leurs interactions, profitant de son adhésion aux standards FIPA pour assurer l'interopérabilité et la robustesse de nos systèmes.
+
+\section{Organisation du projet}
+Ce projet se divise en trois parties distinctes, chacune explorant un aspect différent des systèmes multi-agents:
+\begin{itemize}
+    \item \textbf{Partie 1:} Système de négociation multi-agents avec un vendeur et plusieurs acheteurs dans un scénario d'enchères. Cette partie se concentre sur les interactions compétitives et les protocoles de communication.
+    \item \textbf{Partie 2:} Système de décision multicritère utilisant un agent acheteur mobile qui migre entre conteneurs et plateformes pour évaluer plusieurs vendeurs. Cette partie explore la mobilité des agents et les mécanismes de prise de décision complexes.
+    \item \textbf{Partie 3:} Analyse et test du code de planification d'ordre partiel (POP) de la bibliothèque AIMA, et discussion de sa pertinence pour les systèmes multi-agents. Cette partie examine les capacités de planification avancées pour les agents autonomes.
+\end{itemize}
+
+\chapter{Partie 1: Système de Négociation Multi-agents}
+
+\section{Objectifs et spécifications}
+L'objectif de cette première partie est d'implémenter un scénario d'enchères entre un agent vendeur unique et un ensemble d'agents acheteurs (avec un minimum de deux acheteurs). Ce système doit modéliser un processus d'enchères dynamique où les agents interagissent pour déterminer le prix final d'un article. Le processus d'enchères se déroule comme suit :
+\begin{enumerate}
+    \item \textbf{Mise en vente:} Le vendeur met un article (Produit) en vente.
+    \item \textbf{Prix initial:} Le vendeur demande un prix de départ (prix d'ouverture de l'enchère).
+    \item \textbf{Offres des acheteurs:} Les acheteurs intéressés proposent des enchères, chaque nouvelle offre devant être supérieure au prix actuellement demandé ou à la meilleure offre en cours.
+    \item \textbf{Communication de la meilleure offre:} Le vendeur communique la plus haute enchère reçue à tous les acheteurs participants, les informant ainsi de l'état actuel de l'enchère.
+    \item \textbf{Répétition du processus:} Les étapes 3 et 4 (offres et communication de la meilleure offre) se répètent. Ce cycle continue jusqu'à ce que plus aucun acheteur ne souhaite surenchérir, ou qu'un temps imparti pour l'enchère soit écoulé.
+    \item \textbf{Conclusion de l'enchère:} À la fin du processus d'enchères, si la dernière et plus haute offre est supérieure à un prix de réserve (ce prix de réserve est une information privée, connue uniquement du vendeur), l'article est vendu à l'acheteur ayant fait cette offre (le gagnant). Si la meilleure offre n'atteint pas le prix de réserve, l'article n'est pas vendu.
+\end{enumerate}
+Ce scénario permet d'étudier les stratégies de négociation et la dynamique des marchés simulés par des agents.
+
+\section{Architecture du système d'enchères}
+\subsection{Structure des agents}
+Notre système d'enchères est composé de deux types d'agents principaux, chacun avec des rôles et des responsabilités distincts :
+\begin{itemize}
+    \item \textbf{Agent Vendeur (SellerAgent):} Cet agent est responsable de la gestion globale du processus d'enchères. Ses tâches incluent :
+        \begin{itemize}
+            \item L'initialisation de l'enchère : définition de l'article à vendre, du prix de départ, et du prix de réserve (secret).
+            \item La réception des offres des agents acheteurs.
+            \item Le suivi de l'offre la plus élevée et de l'enchérisseur correspondant.
+            \item La notification à tous les acheteurs de la nouvelle meilleure offre.
+            \item La gestion du temps de l'enchère et la décision de clore les enchères.
+            \item La détermination du gagnant et la finalisation de la vente si le prix de réserve est atteint.
+        \end{itemize}
+    \item \textbf{Agents Acheteurs (BuyerAgents):} Ces agents représentent les participants intéressés par l'acquisition de l'article. Chaque agent acheteur :
+        \begin{itemize}
+            \item Possède sa propre stratégie d'enchère, qui peut inclure un prix maximum qu'il est prêt à payer.
+            \item Reçoit les informations du vendeur concernant l'enchère en cours (notamment la meilleure offre actuelle).
+            \item Décide s'il doit placer une nouvelle offre, et si oui, calcule le montant de cette offre.
+            \item Communique ses offres au vendeur.
+        \end{itemize}
+\end{itemize}
+Cette distinction des rôles permet de modéliser clairement les interactions et les flux d'information au sein du système.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image/part1_architecture.png}
+    \caption{Architecture du système d'enchères}
+\end{figure}
+
+\subsection{Protocole de communication}
+La communication entre les agents vendeur et acheteurs est essentielle au bon déroulement de l'enchère. Elle est réalisée en utilisant le langage de communication d'agents (ACL) spécifié par FIPA (Foundation for Intelligent Physical Agents), ce qui garantit une interopérabilité standardisée. Les principaux types de messages échangés sont :
+\begin{itemize}
+    \item \textbf{CFP (Call For Proposal):} Initialement, le vendeur peut utiliser un message de type CFP pour annoncer l'article mis en vente et inviter les acheteurs à soumettre des offres (ou le prix de départ).
+    \item \textbf{PROPOSE:} Les agents acheteurs utilisent ce type de message pour soumettre leurs offres (enchères) au vendeur.
+    \item \textbf{INFORM:} Le vendeur utilise des messages INFORM pour notifier à tous les acheteurs la nouvelle enchère la plus élevée et l'état actuel de l'enchère. Ce message peut également être utilisé pour annoncer le début ou la fin de l'enchère.
+    \item \textbf{ACCEPT\_PROPOSAL / REJECT\_PROPOSAL:} À la fin de l'enchère, le vendeur peut utiliser un message ACCEPT\_PROPOSAL pour informer l'acheteur gagnant et des messages REJECT\_PROPOSAL aux autres.
+    \item \textbf{CANCEL:} Ce message peut être utilisé pour signaler l'annulation ou la fin prématurée de l'enchère si aucune offre satisfaisante n'est reçue ou si le temps est écoulé sans activité.
+\end{itemize}
+L'utilisation de ces performatifs FIPA structure la conversation et permet aux agents de comprendre l'intention derrière chaque message.
+
+\section{Implémentation}
+\subsection{Agent Vendeur (SellerAgent)}
+L'agent vendeur gère tout le processus d'enchères:
+\begin{itemize}
+    \item Définit les prix de départ et de réserve
+    \item Maintient l'état actuel de l'enchère (offre la plus élevée, enchérisseur actuel)
+    \item Notifie les acheteurs de toute nouvelle offre
+    \item Termine l'enchère après un délai défini
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image/part1_seller_code.png}
+    \caption{Extrait du code de l'agent vendeur}
+\end{figure}
+
+\subsection{Agent Acheteur (BuyerAgent)}
+Les agents acheteurs possèdent:
+\begin{itemize}
+    \item Une enchère maximale qu'ils ne dépasseront pas
+    \item Une stratégie d'enchère basée sur l'enchère actuelle et un facteur aléatoire
+    \item La capacité de répondre aux notifications du vendeur
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image/part1_buyer_code.png}
+    \caption{Extrait du code de l'agent acheteur}
+\end{figure}
+
+\section{Résultats et analyse}
+Lors de l'exécution, nous observons le processus d'enchères complet, depuis le prix initial jusqu'à la détermination du gagnant.
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{image/part11.png}
+        \caption{Résultat de l'exécution du système d'enchères}
+        \label{fig:part1_execution}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{image/part12.png}
+        \caption{Another caption for second figure}
+        \label{fig:second_figure}
+    \end{minipage}
+\end{figure}
+
+Dans l'exemple ci-dessus, nous voyons que:
+\begin{itemize}
+    \item L'enchère commence à 100.0
+    \item Les agents BuyerAgent1, BuyerAgent2 et BuyerAgent3 enchérissent tour à tour
+    \item BuyerAgent3 remporte finalement l'enchère avec une offre de 200.0
+\end{itemize}
+
+\chapter{Partie 2: Système de Décision Multicritère avec Agents Mobiles}
+
+\section{Objectifs et spécifications}
+Cette seconde partie du projet vise à implémenter un système où un agent acheteur mobile prend une décision d'achat en évaluant plusieurs agents vendeurs selon un ensemble de critères. Cette tâche s'inspire de l'exercice 5 de DW4, avec l'ajout de la mobilité de l'agent acheteur. Les spécificités sont les suivantes :
+\begin{itemize}
+    \item \textbf{Agent Acheteur Mobile:} L'agent acheteur doit être capable de mobilité, c'est-à-dire de migrer entre différents conteneurs JADE (migration intra-plateforme) et potentiellement entre différentes plateformes JADE (migration inter-plateforme). Cette mobilité lui permet de rechercher activement et d'interagir avec des vendeurs situés dans des environnements d'exécution distincts.
+    \item \textbf{Environnement de Vente:} Le système comprend plusieurs agents vendeurs, chacun proposant un produit (par exemple, produit 'x') avec différentes caractéristiques.
+    \item \textbf{Évaluation Multicritère:} L'agent acheteur demande des propositions d'achat aux agents vendeurs. Chaque proposition est évaluée sur la base de plusieurs critères (Ci(x)). Ces critères peuvent inclure, par exemple, le prix, la qualité, le volume, les coûts de livraison, etc.
+    \item \textbf{Préférences de l'Acheteur:} L'agent acheteur possède des préférences pour ces critères (Pi(x)). Certaines préférences impliquent la minimisation d'un critère (ex: minimiser le prix, minimiser les coûts de livraison), tandis que d'autres impliquent sa maximisation (ex: maximiser la qualité, maximiser le volume).
+    \item \textbf{Formule de Décision:} L'agent acheteur doit utiliser une formule d'évaluation, notée \(f(x)\), pour déterminer la meilleure offre. Cette formule combine les valeurs des critères \(Ci(x)\) de chaque offre avec les préférences \(Pi(x)\) de l'acheteur (souvent représentées par des poids) pour calculer un score global pour chaque proposition. L'offre ayant le meilleur score selon cette formule est acceptée. Par exemple, une formule simple pourrait être une somme pondérée : \(f(x) = \sum (P_i(x) \cdot V_i(x))\), où \(V_i(x)\) est la valeur normalisée du critère \(C_i(x)\) (ajustée pour que les minimisations deviennent des maximisations dans le calcul du score).
+    \item \textbf{Illustration par l'Exemple:} Le système doit pouvoir illustrer ce processus avec un exemple concret, montrant comment l'agent acheteur évalue des produits en fonction de critères tels que le prix, la qualité et les coûts de livraison, en appliquant ses préférences pour sélectionner l'offre optimale.
+\end{itemize}
+
+\section{Architecture du système de décision multicritère}
+\subsection{Structure des agents}
+Le système est composé des types d'agents suivants :
+\begin{itemize}
+    \item \textbf{Agent Acheteur Mobile (MobileBuyerAgent):} Cet agent est au cœur du système de décision. Ses responsabilités incluent :
+        \begin{itemize}
+            \item La gestion de ses préférences et de la formule d'évaluation multicritère.
+            \item L'initiation de la communication avec les agents vendeurs pour obtenir des propositions.
+            \item L'évaluation des propositions reçues en appliquant sa formule \(f(x)\).
+            \item La prise de décision finale sur l'offre à accepter.
+            \item L'implémentation des mécanismes de migration pour se déplacer vers les conteneurs ou plateformes où se trouvent les vendeurs.
+        \end{itemize}
+    \item \textbf{Agents Vendeurs (SellerAgents):} Ces agents représentent les fournisseurs de produits. Chaque agent vendeur :
+        \begin{itemize}
+            \item Possède un ou plusieurs produits avec des caractéristiques spécifiques (valeurs pour chaque critère : prix, qualité, etc.).
+            \item Répond aux demandes de propositions de l'agent acheteur en fournissant les détails de ses offres.
+        \end{itemize}
+\end{itemize}
+L'interaction entre ces agents permet à l'acheteur d'explorer dynamiquement le marché et de prendre une décision informée.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image/part2_architecture.png}
+    \caption{Architecture du système de décision multicritère}
+\end{figure}
+
+\subsection{Mobilité des agents}
+La mobilité est une caractéristique clé de l'agent acheteur dans cette partie. Elle lui confère l'autonomie nécessaire pour explorer un environnement distribué à la recherche des meilleures offres. On distingue deux types de mobilité :
+\begin{itemize}
+    \item \textbf{Migration intra-plateforme:} Cela concerne le déplacement de l'agent acheteur entre différents conteneurs au sein d'une même plateforme JADE. Par exemple, si différents groupes de vendeurs sont hébergés sur des conteneurs distincts sur la même machine ou le même réseau local JADE, l'agent peut migrer vers ces conteneurs pour interagir localement avec eux. Cela peut réduire la latence de communication.
+    \item \textbf{Migration inter-plateforme:} Ce type de mobilité est plus complexe et implique le déplacement de l'agent acheteur entre des plateformes JADE distinctes et potentiellement hétérogènes (par exemple, gérées par différentes organisations ou situées sur des réseaux physiquement séparés). JADE supporte cela via le protocole FIPA d'agent mobility. Cela permet à l'agent d'accéder à un éventail beaucoup plus large de vendeurs.
+\end{itemize}
+L'implémentation de la mobilité requiert que l'agent sauvegarde son état (y compris ses objectifs, ses connaissances et ses comportements en cours) avant la migration et le restaure à son arrivée sur la nouvelle destination.
+
+\section{Implémentation}
+\subsection{Agent Acheteur Mobile (MobileBuyerAgent)}
+Cet agent implémente:
+\begin{itemize}
+    \item Un système de pondération pour les différents critères d'évaluation
+    \item Une fonction d'évaluation multicritère
+    \item Un mécanisme de migration vers d'autres conteneurs ou plateformes
+    \item Une interface graphique pour visualiser les résultats
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image/part2_buyer_code.png}
+    \caption{Extrait du code de l'agent acheteur mobile}
+\end{figure}
+
+\subsection{Agent Vendeur (SellerAgent)}
+Les agents vendeurs proposent leurs produits avec:
+\begin{itemize}
+    \item Différentes valeurs pour chaque critère
+    \item Un mécanisme pour répondre aux demandes de l'acheteur
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{image/part2_seller_code.png}
+    \caption{Extrait du code de l'agent vendeur}
+\end{figure}
+
+\section{Interface utilisateur}
+Une interface graphique simple a été développée pour visualiser le processus d'évaluation et le résultat.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{image/part2_gui.png}
+    \caption{Interface graphique du système}
+\end{figure}
+
+\section{Résultats et analyse}
+L'exécution du système montre:
+\begin{itemize}
+    \item Les propositions reçues de chaque vendeur avec leurs scores respectifs
+    \item Le processus de migration de l'agent acheteur
+    \item La détermination du vendeur optimal selon les critères définis
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{image/part21.png}
+        \caption{Résultat de l'exécution du système d'enchères}
+        \label{fig:part1_execution}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.38\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{image/part22.png}
+        \caption{Another caption for second figure}
+        \label{fig:second_figure}
+    \end{minipage}
+\end{figure}
+
+Dans l'exemple ci-dessus, nous voyons que:
+\begin{itemize}
+    \item L'agent Seller2 obtient le meilleur score avec 0.8054
+    \item L'évaluation est basée sur une pondération des critères prix (40\%), qualité (50\%) et coût de livraison (10\%)
+\end{itemize}
+
+\chapter{Partie 3: Test du Code de Planification AIMA}
+
+\section{Introduction au Planificateur d'Ordre Partiel (POP)}
+Le planificateur d'ordre partiel (POP) est un algorithme de planification qui se distingue fondamentalement des planificateurs d'ordre total (comme la planification par progression ou régression dans l'espace des états). Alors que les planificateurs d'ordre total construisent un plan comme une séquence linéaire stricte d'actions, le POP construit un plan comme un ensemble d'actions avec un ensemble de contraintes d'ordonnancement partielles. Cela signifie que le POP ne s'engage sur un ordre spécifique entre deux actions que si cela est absolument nécessaire pour garantir la validité du plan (par exemple, pour résoudre un conflit ou satisfaire une précondition).
+
+Cette approche offre plusieurs avantages :
+\begin{itemize}
+    \item \textbf{Décomposition de problèmes :} Elle permet de travailler sur plusieurs sous-objectifs (préconditions ouvertes) de manière relativement indépendante, en développant des sous-plans qui sont ensuite combinés.
+    \item \textbf{Moindre engagement (Least Commitment Strategy) :} Le POP retarde les décisions d'ordonnancement et de liaison de variables aussi longtemps que possible. Les variables ne sont instanciées que lorsque c'est indispensable, et les actions ne sont ordonnées que lorsque des menaces ou des dépendances l'exigent. Cela conduit à des plans plus flexibles.
+    \item \textbf{Recherche dans l'espace des plans :} Contrairement aux algorithmes qui explorent l'espace des états du monde, un planificateur d'ordre partiel recherche dans l'espace des plans possibles. Un plan partiel est un ensemble d'actions, de contraintes d'ordre, de liens causaux et de préconditions non satisfaites. La recherche progresse en ajoutant des actions, des contraintes ou des liens pour satisfaire les préconditions ouvertes et résoudre les menaces.
+\end{itemize}
+Un algorithme de planification est qualifié de \textbf{planificateur d'ordre partiel} s'il est capable d'inclure deux actions dans un plan sans spécifier explicitement laquelle doit précéder l'autre, à moins qu'une telle contrainte ne soit nécessaire. Cette flexibilité peut être particulièrement avantageuse pour les problèmes où de nombreuses actions peuvent être exécutées en parallèle ou dans un ordre indifférent.
+
+\section{Implémentation et structure du code}
+L'implémentation du planificateur d'ordre partiel issue de la bibliothèque AIMA (Artificial Intelligence: A Modern Approach) repose sur plusieurs structures de données clés qui représentent l'état d'un plan partiel en cours de construction :
+
+\begin{itemize}
+    \item \textbf{actions}: Un ensemble des actions concrètes (opérateurs instanciés) qui ont été choisies pour faire partie du plan. Chaque action a des préconditions et des effets. L'implémentation inclut souvent une action \texttt{Start} (représentant l'état initial) et une action \texttt{Finish} (représentant les buts).
+    \item \textbf{constraints} (ou \texttt{orderings}): Un ensemble de contraintes temporelles de la forme \(A \prec B\), signifiant que l'action \(A\) doit être exécutée avant l'action \(B\). Ces contraintes définissent un graphe d'ordre partiel sur les actions.
+    \item \textbf{causal\_links} (ou \texttt{links}): Un ensemble de liens causaux, représentés par \(A \xrightarrow{p} B\). Un tel lien indique que l'action \(A\) réalise la précondition \(p\) de l'action \(B\). Ces liens sont cruciaux car ils doivent être protégés contre les menaces potentielles d'autres actions.
+    \item \textbf{agenda} (ou \texttt{open\_preconditions}): Un ensemble de paires \((p, A_{need})\), où \(p\) est une précondition de l'action \(A_{need}\) qui n'est pas encore satisfaite par une action existante dans le plan via un lien causal. L'objectif du planificateur est de vider cet agenda.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image/part3_pop_structure.png}
+    \caption{Structure du planificateur d'ordre partiel}
+\end{figure}
+
+La classe \texttt{PartialOrderPlanner} dans l'implémentation AIMA encapsule la logique de planification et comprend généralement différentes méthodes auxiliaires pour manipuler et raisonner sur ces structures :
+
+\begin{itemize}
+    \item \texttt{expand\_actions}: Génère toutes les actions possibles (instances d'opérateurs) qui pourraient être ajoutées au plan, souvent avec leurs liaisons de variables.
+    \item \texttt{find\_open\_precondition} (ou \texttt{select\_subgoal}): Sélectionne une précondition ouverte de l'agenda à satisfaire. Des heuristiques peuvent être utilisées ici, comme choisir une précondition avec le moins d'actions possibles pour la satisfaire.
+    \item \texttt{cyclic}: Vérifie si l'ajout d'une nouvelle contrainte d'ordonnancement \(A \prec B\) introduirait un cycle dans le graphe des contraintes, ce qui rendrait le plan irréalisable.
+    \item \texttt{is\_a\_threat} (ou \texttt{find\_threat}): Vérifie si une action \(A_{threat}\) menace un lien causal \(A \xrightarrow{p} B\). Une menace existe si \(A_{threat}\) a un effet qui est la négation de \(p\) (ou qui rend \(p\) faux), et si \(A_{threat}\) peut s'exécuter entre \(A\) et \(B\).
+    \item \texttt{protect} (ou \texttt{resolve\_threat}): Met en œuvre des stratégies pour résoudre les menaces, typiquement par :
+        \begin{itemize}
+            \item \textbf{Promotion}: Forcer l'action menaçante à s'exécuter après l'action dont la précondition est menacée (ajouter \(B \prec A_{threat}\)).
+            \item \textbf{Rétrogradation} (Demotion): Forcer l'action menaçante à s'exécuter avant l'action qui établit la précondition (ajouter \(A_{threat} \prec A\)).
+            \item (Parfois) \textbf{Séparation}: Ajouter des contraintes sur les variables pour que l'effet de l'action menaçante ne corresponde plus à la négation de la précondition.
+        \end{itemize}
+    \item \texttt{toposort}: Si le plan est réussi (agenda vide et pas de menaces non résolues), cette fonction peut générer un ou plusieurs tris topologiques du graphe des contraintes, produisant ainsi des linéarisations (plans d'ordre total) valides à partir du plan d'ordre partiel.
+\end{itemize}
+
+\section{Algorithme d'exécution du planificateur}
+L'algorithme principal du planificateur d'ordre partiel (POP) est un processus de recherche non déterministe qui explore l'espace des plans partiels. Il commence généralement avec un plan initial minimal (contenant les actions \texttt{Start} et \texttt{Finish}, les préconditions de \texttt{Finish} étant dans l'agenda) et essaie itérativement de le raffiner jusqu'à ce que toutes les préconditions soient satisfaites et tous les liens causaux protégés. Les étapes typiques sont :
+
+\begin{enumerate}
+    \item \textbf{Initialisation :} Créer un plan initial avec une action \texttt{Start} (effets = état initial) et une action \texttt{Finish} (préconditions = buts). L'agenda contient les buts comme préconditions ouvertes de \texttt{Finish}.
+    \item \textbf{Sélection d'Objectif (Goal Selection) :} Si l'agenda est vide, le plan est complet. Effectuer un tri topologique pour obtenir une solution linéarisée. Sinon, sélectionner une paire \((p, A_{need})\) de l'agenda (une précondition \(p\) de l'action \(A_{need}\) à satisfaire).
+    \item \textbf{Choix d'Action (Operator Selection) :} Choisir une action \(A_{add}\) (soit une action existante dans le plan, soit une nouvelle instance d'un opérateur de la base de connaissances) qui a un effet correspondant à \(p\). Si aucune telle action n'existe, ou si une nouvelle action est choisie, elle est ajoutée à l'ensemble des actions du plan.
+    \item \textbf{Mise à Jour du Plan :}
+        \begin{itemize}
+            \item Ajouter un lien causal \(A_{add} \xrightarrow{p} A_{need}\) à l'ensemble des liens.
+            \item Ajouter une contrainte d'ordonnancement \(A_{add} \prec A_{need}\) à l'ensemble des contraintes. Si cela crée un cycle, revenir en arrière (backtrack).
+            \item Ajouter les préconditions de \(A_{add}\) (si c'est une nouvelle action) à l'agenda.
+        \end{itemize}
+    \item \textbf{Résolution des Menaces (Threat Resolution) :} Pour chaque action \(A_{threat}\) dans le plan qui pourrait menacer le nouveau lien causal \(A_{add} \xrightarrow{p} A_{need}\) (c'est-à-dire, \(A_{threat}\) a un effet ¬p et pourrait être ordonnée entre \(A_{add}\) et \(A_{need}\)), choisir une méthode pour résoudre la menace :
+        \begin{itemize}
+            \item Promotion : Ajouter la contrainte \(A_{need} \prec A_{threat}\). Si cela crée un cycle, backtrack.
+            \item Rétrogradation : Ajouter la contrainte \(A_{threat} \prec A_{add}\). Si cela crée un cycle, backtrack.
+        \end{itemize}
+        Il faut également vérifier si l'action \(A_{add}\) (ou l'action \(A_{need}\)) menace des liens causaux existants et résoudre ces menaces.
+    \item \textbf{Récursion/Itération :} Retourner à l'étape 2.
+\end{enumerate}
+Ce processus continue jusqu'à ce que l'agenda soit vide et que tous les liens causaux soient protégés, ou jusqu'à ce que toutes les branches de recherche aient été explorées sans succès. Le caractère non déterministe vient des choix effectués à l'étape de sélection d'objectif, de choix d'action, et de résolution des menaces.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image/part3_pop_algorithm.png}
+    \caption{Flux d'exécution de l'algorithme POP}
+\end{figure}
+
+\section{Exemples et résultats}
+Le notebook teste le planificateur sur plusieurs problèmes classiques:
+
+\subsection{Problème du pneu de rechange (spare\_tire)}
+Ce problème consiste à remplacer un pneu crevé par un pneu de rechange. Le plan partiel généré montre que les actions \texttt{Remove(Flat, Axle)} et \texttt{Remove(Spare, Trunk)} peuvent être exécutées dans n'importe quel ordre, mais l'action \texttt{PutOn(Spare, Axle)} doit être effectuée après les deux actions \texttt{Remove}.
+
+\subsection{Problème du monde des blocs (simple\_blocks\_world)}
+Ce problème implique l'empilage de blocs selon une configuration spécifique. Le plan généré ne présente pas de flexibilité dans l'ordre des actions; elles doivent être exécutées dans un ordre strict pour atteindre l'état objectif.
+
+\subsection{Problème des chaussettes et chaussures (socks\_and\_shoes)}
+Ce problème illustre la mise en place de chaussettes et de chaussures dans le bon ordre. Le plan montre que tant que les deux chaussettes sont mises avant les deux chaussures, l'ordre exact n'est pas contraint.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{image/part3_examples.png}
+    \caption{Résultats des tests sur différents problèmes}
+\end{figure}
+
+\section{Comparaison des performances}
+Le notebook compare également les performances de trois algorithmes de planification:
+
+\begin{itemize}
+    \item \texttt{GraphPlan}: le plus rapide, environ 198 μs
+    \item \texttt{PartialOrderPlanner}: légèrement plus lent, environ 258 μs
+    \item \texttt{Linearize}: le plus lent, environ 844 μs
+\end{itemize}
+
+Cette différence s'explique par le fait que \texttt{Linearize} exécute essentiellement une sous-routine \texttt{GraphPlan} puis effectue des transformations supplémentaires. Le \texttt{PartialOrderPlanner} est ralenti par sa méthode \texttt{expand\_actions} qui génère toutes les permutations possibles d'actions et de liaisons de variables.
+
+\section{Relation avec les systèmes multi-agents}
+La planification d'ordre partiel est particulièrement pertinente et avantageuse dans le contexte des systèmes multi-agents (SMA) pour plusieurs raisons :
+
+\begin{itemize}
+    \item \textbf{Coordination Flexible et Parallélisme :} Dans un SMA, plusieurs agents peuvent agir simultanément. Les plans d'ordre partiel, en ne spécifiant que les contraintes d'ordre strictement nécessaires, permettent une plus grande flexibilité pour l'exécution parallèle des actions par différents agents. Chaque agent peut travailler sur une partie du plan tant que les dépendances sont respectées, sans nécessiter une synchronisation rigide et centralisée.
+    \item \textbf{Décomposition de Problèmes et Assignation de Tâches :} POP facilite la décomposition naturelle de problèmes complexes en sous-tâches (les préconditions à satisfaire). Ces sous-tâches, une fois planifiées, peuvent potentiellement être assignées à différents agents spécialisés, chacun responsable de l'exécution d'un sous-ensemble d'actions du plan global.
+    \item \textbf{Stratégie de Moindre Engagement pour Environnements Dynamiques :} Les agents dans les SMA opèrent souvent dans des environnements dynamiques et incertains. La stratégie de moindre engagement du POP est idéale ici : en retardant les décisions d'ordonnancement, le système conserve une plus grande flexibilité pour s'adapter aux changements imprévus ou aux nouvelles informations sans devoir invalider et replanifier l'intégralité du plan.
+    \item \textbf{Résolution Décentralisée des Conflits :} Les liens causaux et la détection/résolution des menaces sont des mécanismes qui peuvent aider à identifier et à résoudre les conflits potentiels entre les actions de différents agents, notamment les conflits de ressources ou les interférences d'objectifs. Bien que le POP classique soit centralisé, ses principes peuvent inspirer des approches de planification distribuée où les agents négocient les contraintes et les liens.
+    \item \textbf{Interopérabilité et Plans Partagés :} Un plan d'ordre partiel peut servir de base à une compréhension partagée d'un objectif commun entre plusieurs agents. Les contraintes et les liens causaux définissent clairement les interdépendances, permettant aux agents de coordonner leurs actions de manière plus robuste.
+\end{itemize}
+
+Contrairement aux parties 1 et 2 de notre projet qui se sont concentrées sur les interactions de haut niveau (négociation, migration) et les mécanismes de décision basés sur des évaluations directes, cette troisième partie explore les fondements de la planification d'actions. Intégrer des capacités de planification de type POP au sein des agents individuels leur permettrait une autonomie et une intelligence accrues dans la formulation et l'exécution de séquences d'actions pour atteindre leurs objectifs, en particulier dans des scénarios complexes nécessitant une coordination ou une adaptation à long terme. Par exemple, un `MobileBuyerAgent` pourrait utiliser POP pour planifier sa séquence de migrations et d'interactions avec les vendeurs pour optimiser non seulement l'achat final mais aussi le processus de recherche lui-même.
+
+\section{Conclusion}
+Le planificateur d'ordre partiel offre une approche sophistiquée et puissante pour la génération de plans. Sa capacité à produire des plans flexibles, qui encapsulent un ensemble d'exécutions valides plutôt qu'une seule séquence rigide, est un atout majeur. Cette flexibilité est particulièrement précieuse dans les systèmes multi-agents, où l'autonomie, le parallélisme et l'adaptabilité sont des caractéristiques souhaitées. Différents agents peuvent exécuter différentes parties du plan de manière concurrente, à condition que les contraintes d'ordre minimales soient respectées.
+
+L'implémentation AIMA, testée sur divers problèmes classiques de planification (comme le problème du pneu de rechange, le monde des blocs, et les chaussettes et chaussures), démontre l'efficacité de l'algorithme POP pour identifier les dépendances critiques et les opportunités de parallélisme. Bien que potentiellement plus lent que certains autres algorithmes comme GraphPlan pour des problèmes spécifiques en raison de la gestion explicite des menaces et des liens, sa richesse expressive et la flexibilité des plans qu'il génère fournissent une base solide pour l'intégration de capacités de planification avancées dans des agents intelligents et des systèmes multi-agents complexes.
+
+\chapter{Conclusion Générale}
+
+Ce projet nous a permis d'explorer trois facettes complémentaires et importantes des systèmes multi-agents et de l'intelligence artificielle :
+
+\begin{itemize}
+    \item La \textbf{négociation et les enchères} entre agents (Partie 1), illustrant comment des agents autonomes peuvent interagir dans un contexte compétitif, suivre des protocoles définis (comme les enchères) pour atteindre des objectifs potentiellement opposés, et comment la communication structurée (via FIPA ACL) est cruciale.
+    \item La \textbf{prise de décision multicritère et la mobilité des agents} (Partie 2), démontrant des capacités avancées telles que l'évaluation de multiples options basées sur divers critères pondérés et la capacité d'un agent à se déplacer physiquement ou logiquement (migration intra et inter-plateforme) pour recueillir des informations ou exécuter des tâches dans des environnements distribués.
+    \item La \textbf{planification d'actions avec ordre partiel} (Partie 3), en analysant l'algorithme POP. Cette exploration a mis en lumière comment les agents peuvent construire des plans d'action flexibles, en ne s'engageant sur l'ordre des actions que lorsque c'est nécessaire, ce qui est particulièrement adapté aux environnements dynamiques et multi-agents où le parallélisme et l'adaptabilité sont essentiels.
+\end{itemize}
+
+Les systèmes multi-agents, soutenus par des plateformes de développement comme JADE, offrent une approche paradigmatique puissante pour modéliser et résoudre des problèmes complexes qui impliquent de multiples entités autonomes. Ces entités possèdent leurs propres objectifs, connaissances, capacités et stratégies, et leurs interactions (coopératives ou compétitives) mènent à l'émergence du comportement global du système.
+
+Les techniques explorées – négociation, décision multicritère, mobilité, et planification avancée – sont des composantes fondamentales pour la conception d'agents intelligents et de systèmes multi-agents robustes et efficaces. Les applications potentielles de ces concepts et technologies sont vastes et continuent de croître, allant du commerce électronique intelligent et des marchés automatisés, aux systèmes de transport intelligents, à la gestion optimisée de chaînes d'approvisionnement, à la robotique collaborative, et bien d'autres domaines où la distribution de l'intelligence et de la prise de décision est avantageuse. Ce projet a fourni un aperçu pratique et théorique de ces domaines fascinants.
+
+\end{document}
